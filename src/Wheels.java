@@ -111,7 +111,6 @@ public class Wheels
             n13 = -16;
         }
         n13 = 0;
-        wheelGr = 0;
         planeY[0] = n3;
         planeZ[0] = (n4 + 10.0f * this.size);
         planeY[1] = (n3 + 8.66f * this.size);

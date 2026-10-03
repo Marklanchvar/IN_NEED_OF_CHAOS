@@ -215,8 +215,8 @@ public class Login implements Runnable
         this.m.x = -335;
         this.m.z = 0;
         this.m.y = -50;
-        this.m.xz = 0;
-        this.m.zy = 20;
+        this.m.yaw = 0;
+        this.m.pitch = 20;
         this.m.ground = -2000;
         this.pend = 0;
         this.pendb = false;
@@ -259,8 +259,8 @@ public class Login implements Runnable
         this.m.x = -335;
         this.m.z = 0;
         this.m.y = -50;
-        this.m.xz = 0;
-        this.m.zy = 20;
+        this.m.yaw = 0;
+        this.m.pitch = 20;
         this.m.ground = -2000;
         this.pend = 0;
         this.pendb = false;

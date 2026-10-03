@@ -354,10 +354,10 @@ public class CarMaker extends Applet implements Runnable, ActionListener
         this.btgame[1] = this.getImage("" + Madness.fpath + "data/backtogame2.gif");
         this.logo = this.getImage("" + Madness.fpath + "data/carmakerlogo.gif");
         this.m.w = 700;
-        this.m.cx = 350;
+        this.m.viewX = 350;
         this.m.z = -240;
         this.m.y = -400;
-        this.m.zy = 4;
+        this.m.pitch = 4;
         this.m.focus_point = 800;
         this.m.fadfrom(8000);
         this.m.cfade[0] = 187;
@@ -907,8 +907,8 @@ public class CarMaker extends Applet implements Runnable, ActionListener
                         this.rot(array, array2, this.o.x - this.m.x, this.o.z - this.m.z, this.o.roll, 6);
                         this.rot(array2, array3, this.o.z - this.m.z, this.o.y - this.m.y, this.o.pitch, 6);
                         this.rot(array, array3, this.o.x - this.m.x, this.o.y - this.m.y, this.o.yaw, 6);
-                        this.rot(array, array3, this.m.cx, this.m.cz, this.m.xz, 6);
-                        this.rot(array2, array3, this.m.cy, this.m.cz, this.m.zy, 6);
+                        this.rot(array, array3, this.m.viewX, this.m.viewZ, this.m.yaw, 6);
+                        this.rot(array2, array3, this.m.viewY, this.m.viewZ, this.m.pitch, 6);
                         final int[] array7 = new int[6];
                         final int[] array8 = new int[6];
                         for (int n13 = 0; n13 < 6; ++n13) {
@@ -1956,7 +1956,7 @@ public class CarMaker extends Applet implements Runnable, ActionListener
                             this.crashok = true;
                             this.hitmag = 17000;
                             for (int n74 = 0; n74 < this.o.npl; ++n74) {
-                                if ((this.o.p.get(n74).wz == 0 || this.o.p.get(n74).gr == -17 || this.o.p.get(n74).gr == -16) && this.o.p.get(n74).embos == 0) {
+                                if ((this.o.p.get(n74).wy == 0 || this.o.p.get(n74).gr == -17 || this.o.p.get(n74).gr == -16) && this.o.p.get(n74).embos == 0) {
                                     this.o.p.get(n74).embos = 1;
                                 }
                             }
@@ -3162,7 +3162,7 @@ public class CarMaker extends Applet implements Runnable, ActionListener
                                 str = str + "v " + array7[n10] / 10.0f + " " + -array8[n10] / 10.0f + " " + array9[n10] / 10.0f + "\n";
                             }
                             for (int n11 = 0; n11 < this.o.npl; ++n11) {
-                                if (this.o.p.get(n11).wz == 0) {
+                                if (this.o.p.get(n11).wy == 0) {
                                     String str2 = str + "f";
                                     for (int n12 = 0; n12 < this.o.p.get(n11).n; ++n12) {
                                         str2 += " ";
@@ -4681,7 +4681,7 @@ public class CarMaker extends Applet implements Runnable, ActionListener
             for (int i = 0; i < this.o.npl; ++i) {
                 float n3 = 0.0f;
                 for (int j = 0; j < this.o.p.get(i).n; ++j) {
-                    if (this.o.p.get(i).wz == 0 && this.py(this.o.keyx[n], this.o.p.get(i).ox[j], this.o.keyy[n], this.o.p.get(i).oy[j]) < n2) {
+                    if (this.o.p.get(i).wy == 0 && this.py(this.o.keyx[n], this.o.p.get(i).ox[j], this.o.keyy[n], this.o.p.get(i).oy[j]) < n2) {
                         n3 = a / 20.0f * this.m.random();
                         final float[] oz = this.o.p.get(i).oy;
                         final int n4 = j;
@@ -4758,7 +4758,7 @@ public class CarMaker extends Applet implements Runnable, ActionListener
             for (int i = 0; i < this.o.npl; ++i) {
                 float n3 = 0.0f;
                 for (int j = 0; j < this.o.p.get(i).n; ++j) {
-                    if (this.o.p.get(i).wz == 0 && this.py(this.o.keyx[n], this.o.p.get(i).ox[j], this.o.keyy[n], this.o.p.get(i).oy[j]) < n2) {
+                    if (this.o.p.get(i).wy == 0 && this.py(this.o.keyx[n], this.o.p.get(i).ox[j], this.o.keyy[n], this.o.p.get(i).oy[j]) < n2) {
                         n3 = a / 20.0f * this.m.random();
                         final float[] oz = this.o.p.get(i).oy;
                         final int n4 = j;
@@ -4828,7 +4828,7 @@ public class CarMaker extends Applet implements Runnable, ActionListener
                     ctmag = n / 15.0f * this.m.random();
                 }
                 for (int j = 0; j < this.o.p.get(i).n; ++j) {
-                    if (this.o.p.get(i).wz == 0 && (Math.abs(this.o.p.get(i).oz[j] - this.o.roofat - this.squash) < n2 * 3 || this.o.p.get(i).oz[j] < this.o.roofat + this.squash) && this.squash < n2) {
+                    if (this.o.p.get(i).wy == 0 && (Math.abs(this.o.p.get(i).oz[j] - this.o.roofat - this.squash) < n2 * 3 || this.o.p.get(i).oz[j] < this.o.roofat + this.squash) && this.squash < n2) {
                         ctmag = n / 15.0f * this.m.random();
                         final float[] oy = this.o.p.get(i).oz;
                         final int n5 = j;
@@ -4963,17 +4963,17 @@ public class CarMaker extends Applet implements Runnable, ActionListener
     }
     
     public int xs(final float n, float cz) {
-        if (cz < this.m.cz) {
-            cz = this.m.cz;
+        if (cz < this.m.viewZ) {
+            cz = this.m.viewZ;
         }
-        return (int) ((cz - this.m.focus_point) * (this.m.cx - n) / cz + n);
+        return (int) ((cz - this.m.focus_point) * (this.m.viewX - n) / cz + n);
     }
     
     public int ys(final float n, float cz) {
-        if (cz < this.m.cz) {
-            cz = this.m.cz;
+        if (cz < this.m.viewZ) {
+            cz = this.m.viewZ;
         }
-        return (int) ((cz - this.m.focus_point) * (this.m.cy - n) / cz + n);
+        return (int) ((cz - this.m.focus_point) * (this.m.viewY - n) / cz + n);
     }
     
     @Override

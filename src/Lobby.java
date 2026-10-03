@@ -2728,8 +2728,8 @@ public class Lobby implements Runnable
                                         this.m.x = -335;
                                         this.m.z = 0;
                                         this.m.y = -50;
-                                        this.m.xz = 0;
-                                        this.m.zy = 20;
+                                        this.m.yaw = 0;
+                                        this.m.pitch = 20;
                                         this.m.ground = -2000;
                                         this.pend = 0;
                                         this.pendb = false;
@@ -2801,8 +2801,8 @@ public class Lobby implements Runnable
                                             this.m.x = -335;
                                             this.m.z = 0;
                                             this.m.y = -50;
-                                            this.m.xz = 0;
-                                            this.m.zy = 20;
+                                            this.m.yaw = 0;
+                                            this.m.pitch = 20;
                                             this.m.ground = -2000;
                                             if (this.pcars[n40] == -1) {
                                                 this.rd.setFont(new Font("Arial", 1, 11));
@@ -3055,7 +3055,7 @@ public class Lobby implements Runnable
                                                             this.dispco.p.get(n55).hsb[2] = 1.0f - this.pcols[this.dispcar][5];
                                                         }
                                                     }
-                                                    this.m.cx = 561;
+                                                    this.m.viewX = 561;
                                                     this.dispco.y = 1200;
                                                     this.dispco.z = 605 - this.dispco.grat;
                                                     this.dispco.x = 225;
@@ -3067,13 +3067,13 @@ public class Lobby implements Runnable
                                                     }
                                                     this.dispco.roll = 0;
                                                     final ContO dispco = this.dispco;
-                                                    dispco.wzy -= 10;
-                                                    if (this.dispco.wzy < -45) {
+                                                    dispco.wheelSpin -= 10;
+                                                    if (this.dispco.wheelSpin < -45) {
                                                         final ContO dispco2 = this.dispco;
-                                                        dispco2.wzy += 45;
+                                                        dispco2.wheelSpin += 45;
                                                     }
                                                     this.dispco.d(this.rd);
-                                                    this.m.cx = 400;
+                                                    this.m.viewX = 400;
                                                     this.rd.setFont(new Font("Arial", 1, 11));
                                                     final int n56 = 424;
                                                     final int n57 = -55;
@@ -6498,8 +6498,8 @@ public class Lobby implements Runnable
             this.m.x = -335;
             this.m.z = 0;
             this.m.y = -50;
-            this.m.xz = 0;
-            this.m.zy = 20;
+            this.m.yaw = 0;
+            this.m.pitch = 20;
             this.m.ground = -2000;
             this.fase = 1;
             control.enter = false;
@@ -6547,8 +6547,8 @@ public class Lobby implements Runnable
                             this.m.x = -335;
                             this.m.z = 0;
                             this.m.y = -50;
-                            this.m.xz = 0;
-                            this.m.zy = 20;
+                            this.m.yaw = 0;
+                            this.m.pitch = 20;
                             this.m.ground = -2000;
                             this.fase = 1;
                         }
@@ -6566,8 +6566,8 @@ public class Lobby implements Runnable
                             this.m.x = -335;
                             this.m.z = 0;
                             this.m.y = -50;
-                            this.m.xz = 0;
-                            this.m.zy = 20;
+                            this.m.yaw = 0;
+                            this.m.pitch = 20;
                             this.m.ground = -2000;
                             this.fase = 1;
                         }

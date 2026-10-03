@@ -346,8 +346,8 @@ public class Record
         this.xy[299][n] = contO.roll;
         this.zy[299][n] = contO.pitch;
         this.xz[299][n] = contO.yaw;
-        this.wxz[299][n] = contO.wxz;
-        this.wzy[299][n] = contO.wzy;
+        this.wxz[299][n] = contO.wheelSteer;
+        this.wzy[299][n] = contO.wheelSpin;
         if (n == n5) {
             for (int k = 0; k < 299; ++k) {
                 this.checkpoint[k] = this.checkpoint[k + 1];
@@ -420,8 +420,8 @@ public class Record
         contO.pitch = this.zy[n2][n];
         contO.roll = this.xy[n2][n];
         contO.yaw = this.xz[n2][n];
-        contO.wxz = this.wxz[n2][n];
-        contO.wzy = this.wzy[n2][n];
+        contO.wheelSteer = this.wxz[n2][n];
+        contO.wheelSpin = this.wzy[n2][n];
         if (n == 0) {
             contO.m.checkpoint = this.checkpoint[n2];
             contO.m.lastcheck = this.lastcheck[n2];
@@ -434,14 +434,14 @@ public class Record
         }
         if (n2 == 0 && this.dest[n] < -1) {
             for (int i = 0; i < contO.npl; ++i) {
-                if (contO.p.get(i).wz == 0 || contO.p.get(i).gr == -17 || contO.p.get(i).gr == -16) {
+                if (contO.p.get(i).wy == 0 || contO.p.get(i).gr == -17 || contO.p.get(i).gr == -16) {
                     contO.p.get(i).embos = 13;
                 }
             }
         }
         if (this.cntdest[n] != 0) {
             for (int j = 0; j < contO.npl; ++j) {
-                if (contO.p.get(j).wz == 0 || contO.p.get(j).gr == -17 || contO.p.get(j).gr == -16) {
+                if (contO.p.get(j).wy == 0 || contO.p.get(j).gr == -17 || contO.p.get(j).gr == -16) {
                     contO.p.get(j).embos = 1;
                 }
             }
@@ -494,8 +494,8 @@ public class Record
         contO.pitch = this.hzy[lastfr][n];
         contO.roll = this.hxy[lastfr][n];
         contO.yaw = this.hxz[lastfr][n];
-        contO.wxz = this.hwxz[lastfr][n];
-        contO.wzy = this.hwzy[lastfr][n];
+        contO.wheelSteer = this.hwxz[lastfr][n];
+        contO.wheelSpin = this.hwzy[lastfr][n];
         if (n == n2) {
             contO.m.checkpoint = this.hcheckpoint[lastfr];
             contO.m.lastcheck = this.hlastcheck[lastfr];
@@ -508,14 +508,14 @@ public class Record
         }
         if (lastfr == 0 && this.hdest[n] < -1) {
             for (int i = 0; i < contO.npl; ++i) {
-                if (contO.p.get(i).wz == 0 || contO.p.get(i).gr == -17 || contO.p.get(i).gr == -16) {
+                if (contO.p.get(i).wy == 0 || contO.p.get(i).gr == -17 || contO.p.get(i).gr == -16) {
                     contO.p.get(i).embos = 13;
                 }
             }
         }
         if (this.cntdest[n] != 0) {
             for (int j = 0; j < contO.npl; ++j) {
-                if (contO.p.get(j).wz == 0 || contO.p.get(j).gr == -17 || contO.p.get(j).gr == -16) {
+                if (contO.p.get(j).wy == 0 || contO.p.get(j).gr == -17 || contO.p.get(j).gr == -16) {
                     contO.p.get(j).embos = 1;
                 }
             }
@@ -638,7 +638,7 @@ public class Record
                 for (int k = 0; k < contO.npl; ++k) {
                     float n5 = 0.0f;
                     for (int l = 0; l < contO.p.get(k).n; ++l) {
-                        if (contO.p.get(k).wz == 0 && this.py(contO.keyx[n], contO.p.get(k).ox[l], contO.keyy[n], contO.p.get(k).oy[l]) < mad.cd.clrad.get(mad.cn)) {
+                        if (contO.p.get(k).wy == 0 && this.py(contO.keyx[n], contO.p.get(k).ox[l], contO.keyy[n], contO.p.get(k).oy[l]) < mad.cd.clrad.get(mad.cn)) {
                             n5 = n2 / 20.0f * this.m.random();
                             final float[] oz = contO.p.get(k).oy;
                             final int n6 = l;
@@ -699,7 +699,7 @@ public class Record
                 for (int n10 = 0; n10 < contO.npl; ++n10) {
                     float n11 = 0.0f;
                     for (int n12 = 0; n12 < contO.p.get(n10).n; ++n12) {
-                        if (contO.p.get(n10).wz == 0) {
+                        if (contO.p.get(n10).wy == 0) {
                             n11 = n2 / 15.0f * this.m.random();
                             if ((Math.abs(contO.p.get(n10).oz[n12] - mad.cd.flipy.get(mad.cn) - this.squash[0][mad.im]) < mad.cd.msquash.get(mad.cn) * 3 || contO.p.get(n10).oz[n12] < mad.cd.flipy.get(mad.cn) + this.squash[0][mad.im]) && this.squash[0][mad.im] < mad.cd.msquash.get(mad.cn)) {
                                 final float[] oy = contO.p.get(n10).oz;
@@ -741,7 +741,7 @@ public class Record
             for (int i = 0; i < contO.npl; ++i) {
                 float a2 = 0.0f;
                 for (int j = 0; j < contO.p.get(i).n; ++j) {
-                    if (contO.p.get(i).wz == 0 && this.py(contO.keyx[n], contO.p.get(i).ox[j], contO.keyy[n], contO.p.get(i).oy[j]) < mad.cd.clrad.get(mad.cn)) {
+                    if (contO.p.get(i).wy == 0 && this.py(contO.keyx[n], contO.p.get(i).ox[j], contO.keyy[n], contO.p.get(i).oy[j]) < mad.cd.clrad.get(mad.cn)) {
                         a2 = a / 20.0f * this.m.random();
                         final float[] oz = contO.p.get(i).oy;
                         final int n2 = j;
@@ -809,7 +809,7 @@ public class Record
             for (int i = 0; i < contO.npl; ++i) {
                 float a2 = 0.0f;
                 for (int j = 0; j < contO.p.get(i).n; ++j) {
-                    if (contO.p.get(i).wz == 0 && this.py(contO.keyx[n], contO.p.get(i).ox[j], contO.keyy[n], contO.p.get(i).oy[j]) < mad.cd.clrad.get(mad.cn)) {
+                    if (contO.p.get(i).wy == 0 && this.py(contO.keyx[n], contO.p.get(i).ox[j], contO.keyy[n], contO.p.get(i).oy[j]) < mad.cd.clrad.get(mad.cn)) {
                         a2 = a / 20.0f * this.m.random();
                         final float[] oz = contO.p.get(i).oy;
                         final int n2 = j;
@@ -877,7 +877,7 @@ public class Record
             for (int i = 0; i < contO.npl; ++i) {
                 float n2 = 0.0f;
                 for (int j = 0; j < contO.p.get(i).n; ++j) {
-                    if (contO.p.get(i).wz == 0 && this.py(contO.keyx[n], contO.p.get(i).ox[j], contO.keyy[n], contO.p.get(i).oy[j]) < mad.cd.clrad.get(mad.cn)) {
+                    if (contO.p.get(i).wy == 0 && this.py(contO.keyx[n], contO.p.get(i).ox[j], contO.keyy[n], contO.p.get(i).oy[j]) < mad.cd.clrad.get(mad.cn)) {
                         n2 = a / 20.0f * this.m.random();
                     }
                 }
@@ -900,7 +900,7 @@ public class Record
             for (int i = 0; i < contO.npl; ++i) {
                 float n2 = 0.0f;
                 for (int j = 0; j < contO.p.get(i).n; ++j) {
-                    if (contO.p.get(i).wz == 0 && this.py(contO.keyx[n], contO.p.get(i).ox[j], contO.keyy[n], contO.p.get(i).oy[j]) < mad.cd.clrad.get(mad.cn)) {
+                    if (contO.p.get(i).wy == 0 && this.py(contO.keyx[n], contO.p.get(i).ox[j], contO.keyy[n], contO.p.get(i).oy[j]) < mad.cd.clrad.get(mad.cn)) {
                         n2 = a / 20.0f * this.m.random();
                     }
                 }

@@ -1317,14 +1317,14 @@ public class Globe implements Runnable
                                         this.m.iw = -10;
                                         this.m.h = 320;
                                         this.m.w = 580;
-                                        this.m.cx = 280;
-                                        this.m.cy = 150;
+                                        this.m.viewX = 280;
+                                        this.m.viewY = 150;
                                         this.m.aroundtrack(this.cp);
                                         this.m.d(this.rdo);
                                         int n21 = 0;
                                         final int[] array12 = new int[1000];
                                         for (int n22 = 0; n22 < this.gs.nob; ++n22) {
-                                            if (this.co[n22].dist != 0) {
+                                            if (this.co[n22].contDistance != 0) {
                                                 array12[n21] = n22;
                                                 ++n21;
                                             }
@@ -1338,8 +1338,8 @@ public class Globe implements Runnable
                                         }
                                         for (int n24 = 0; n24 < n21; ++n24) {
                                             for (int n25 = n24 + 1; n25 < n21; ++n25) {
-                                                if (this.co[array12[n24]].dist != this.co[array12[n25]].dist) {
-                                                    if (this.co[array12[n24]].dist < this.co[array12[n25]].dist) {
+                                                if (this.co[array12[n24]].contDistance != this.co[array12[n25]].contDistance) {
+                                                    if (this.co[array12[n24]].contDistance < this.co[array12[n25]].contDistance) {
                                                         final int[] array14 = array13;
                                                         final int n26 = n24;
                                                         ++array14[n26];
@@ -1372,8 +1372,8 @@ public class Globe implements Runnable
                                         this.m.trk = 0;
                                         this.m.h = 450;
                                         this.m.w = 800;
-                                        this.m.cx = 400;
-                                        this.m.cy = 225;
+                                        this.m.viewX = 400;
+                                        this.m.viewY = 225;
                                         this.rdo.setComposite(AlphaComposite.getInstance(3, 0.5f));
                                         this.rdo.setColor(new Color(255, 255, 255));
                                         this.rdo.fillRoundRect(9, 44, 136, 39, 20, 20);
@@ -4499,13 +4499,13 @@ public class Globe implements Runnable
                                 this.m.iw = 0;
                                 this.m.h = 300;
                                 this.m.w = 560;
-                                this.m.cx = 280;
-                                this.m.cy = 150;
+                                this.m.viewX = 280;
+                                this.m.viewY = 150;
                                 this.m.aroundtrack(this.cp);
                                 int n40 = 0;
                                 final int[] array5 = new int[200];
                                 for (int n41 = 0; n41 < this.gs.nob; ++n41) {
-                                    if (this.co[n41].dist != 0) {
+                                    if (this.co[n41].contDistance != 0) {
                                         array5[n40] = n41;
                                         ++n40;
                                     }
@@ -4519,8 +4519,8 @@ public class Globe implements Runnable
                                 }
                                 for (int n43 = 0; n43 < n40; ++n43) {
                                     for (int n44 = n43 + 1; n44 < n40; ++n44) {
-                                        if (this.co[array5[n43]].dist != this.co[array5[n44]].dist) {
-                                            if (this.co[array5[n43]].dist < this.co[array5[n44]].dist) {
+                                        if (this.co[array5[n43]].contDistance != this.co[array5[n44]].contDistance) {
+                                            if (this.co[array5[n43]].contDistance < this.co[array5[n44]].contDistance) {
                                                 final int[] array7 = array6;
                                                 final int n45 = n43;
                                                 ++array7[n45];
@@ -4553,8 +4553,8 @@ public class Globe implements Runnable
                                 this.m.trk = 0;
                                 this.m.h = 450;
                                 this.m.w = 800;
-                                this.m.cx = 400;
-                                this.m.cy = 225;
+                                this.m.viewX = 400;
+                                this.m.viewY = 225;
                                 this.rdo.setComposite(AlphaComposite.getInstance(3, 0.5f));
                                 this.rdo.setColor(new Color(255, 255, 255));
                                 this.rdo.fillRoundRect(9, 44, 136, 39, 20, 20);
@@ -4864,11 +4864,11 @@ public class Globe implements Runnable
                                 this.m.x = -335;
                                 this.m.z = 0;
                                 this.m.y = -50;
-                                this.m.xz = 0;
-                                this.m.zy = 20;
+                                this.m.yaw = 0;
+                                this.m.pitch = 20;
                                 this.m.ground = -2000;
-                                this.m.cx = 280;
-                                this.m.cy = 150;
+                                this.m.viewX = 280;
+                                this.m.viewY = 150;
                                 this.bco.get(35 + this.cd.haltload).y = 1000;
                                 this.bco.get(35 + this.cd.haltload).z = 480 - this.bco.get(35 + this.cd.haltload).grat;
                                 this.bco.get(35 + this.cd.haltload).x = -52;
@@ -4880,14 +4880,14 @@ public class Globe implements Runnable
                                 }
                                 this.bco.get(35 + this.cd.haltload).roll = 0;
                                 final ContO contO = this.bco.get(35 + this.cd.haltload);
-                                contO.wzy -= 10;
-                                if (this.bco.get(35 + this.cd.haltload).wzy < -45) {
+                                contO.wheelSpin -= 10;
+                                if (this.bco.get(35 + this.cd.haltload).wheelSpin < -45) {
                                     final ContO contO2 = this.bco.get(35 + this.cd.haltload);
-                                    contO2.wzy += 45;
+                                    contO2.wheelSpin += 45;
                                 }
                                 this.bco.get(35 + this.cd.haltload).d(this.rdo);
-                                this.m.cx = 400;
-                                this.m.cy = 225;
+                                this.m.viewX = 400;
+                                this.m.viewY = 225;
                                 int n57 = 137;
                                 if (this.xt.sc[0] == 35 + this.cd.haltload) {
                                     n57 = 255;
@@ -12827,8 +12827,8 @@ public class Globe implements Runnable
         this.m.x = -335;
         this.m.z = 0;
         this.m.y = -50;
-        this.m.xz = 0;
-        this.m.zy = 20;
+        this.m.yaw = 0;
+        this.m.pitch = 20;
         this.m.ground = -2000;
         try {
             this.socket.close();

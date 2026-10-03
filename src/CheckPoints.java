@@ -89,7 +89,7 @@ public class CheckPoints
                     this.magperc[i] = 1.0f;
                 }
                 this.pos[i] = 0;
-                this.onscreen[i] = array2[i].dist;
+                this.onscreen[i] = array2[i].contDistance;
                 this.opx[i] = array2[i].x;
                 this.opz[i] = array2[i].y;
                 this.omxz[i] = array[i].mxz;

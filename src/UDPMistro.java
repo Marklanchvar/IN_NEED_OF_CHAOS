@@ -583,7 +583,7 @@ public class UDPMistro implements Runnable
                         mad.loop = this.getvalue(s, 0);
                     }
                     if (getncoms > 14) {
-                        contO.wxz = this.getvalue(s, 0);
+                        contO.wheelSteer = this.getvalue(s, 0);
                     }
                     if (getncoms > 15) {
                         mad.pcleared = this.getvalue(s, 0);
@@ -848,7 +848,7 @@ public class UDPMistro implements Runnable
         final StringBuilder sb33 = new StringBuilder();
         final String[] array33 = this.info[n2];
         final int n35 = 0;
-        array33[n35] = sb33.append(array33[n35]).append(",").append(contO.x).append(",").append(contO.z).append(",").append(contO.y).append(",").append(contO.yaw).append(",").append(contO.roll).append(",").append(contO.pitch).append(",").append((int)(mad.speed * 100.0f)).append(",").append((int)(mad.power * 100.0f)).append(",").append(mad.mxz).append(",").append(mad.pzy).append(",").append(mad.pxy).append(",").append(mad.txz).append(",").append(mad.loop).append(",").append(contO.wxz).append(",").append(mad.pcleared).append(",").append(mad.clear).append(",").append(mad.nlaps).append(",").append((int)(n * 100.0f)).append(",").append(i).append(",").toString();
+        array33[n35] = sb33.append(array33[n35]).append(",").append(contO.x).append(",").append(contO.z).append(",").append(contO.y).append(",").append(contO.yaw).append(",").append(contO.roll).append(",").append(contO.pitch).append(",").append((int)(mad.speed * 100.0f)).append(",").append((int)(mad.power * 100.0f)).append(",").append(mad.mxz).append(",").append(mad.pzy).append(",").append(mad.pxy).append(",").append(mad.txz).append(",").append(mad.loop).append(",").append(contO.wheelSteer).append(",").append(mad.pcleared).append(",").append(mad.clear).append(",").append(mad.nlaps).append(",").append((int)(n * 100.0f)).append(",").append(i).append(",").toString();
         while (this.info[n2][0].length() < 110) {
             final StringBuilder sb34 = new StringBuilder();
             final String[] array34 = this.info[n2];

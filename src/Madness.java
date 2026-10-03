@@ -39,6 +39,7 @@ public class Madness extends Panel
     static String fpath;
     static boolean fullscreen;
     static int anti;
+    static int moto;
     static GraphicsDevice myDevice;
     static DisplayMode defdisp;
     static DisplayMode fulldisp;
@@ -562,6 +563,7 @@ public class Madness extends Panel
         Madness.fpath = "";
         Madness.fullscreen = false;
         Madness.anti = 1;
+        Madness.moto = 1;
         Madness.testdrive = 0;
         Madness.testcar = "";
         Madness.textid = 0;

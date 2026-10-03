@@ -543,46 +543,46 @@ public class Mad
             }
         }
         float n11 = (float) Math.toDegrees(this.speed / contO.wrad);
-        contO.wzy -= n11;
-        if (contO.wzy < -180) {
-            contO.wzy += 360;
+        contO.wheelSpin -= n11;
+        if (contO.wheelSpin < -180) {
+            contO.wheelSpin += 360;
         }
-        if (contO.wzy > 180) {
-            contO.wzy -= 360;
+        if (contO.wheelSpin > 180) {
+            contO.wheelSpin -= 360;
         }
         if (control.right) {
-            contO.wxz -= this.cd.turn.get(this.cn);
-            if (contO.wxz < -36) {
-                contO.wxz = -36;
+            contO.wheelSteer -= this.cd.turn.get(this.cn);
+            if (contO.wheelSteer < -36) {
+                contO.wheelSteer = -36;
             }
         }
         if (control.left) {
-            contO.wxz += this.cd.turn.get(this.cn);
-            if (contO.wxz > 36) {
-                contO.wxz = 36;
+            contO.wheelSteer += this.cd.turn.get(this.cn);
+            if (contO.wheelSteer > 36) {
+                contO.wheelSteer = 36;
             }
         }
-        if (contO.wxz != 0 && !control.left && !control.right) {
+        if (contO.wheelSteer != 0 && !control.left && !control.right) {
             if (Math.abs(this.speed) < 10.0f) {
-                if (Math.abs(contO.wxz) == 1) {
-                    contO.wxz = 0;
+                if (Math.abs(contO.wheelSteer) == 1) {
+                    contO.wheelSteer = 0;
                 }
-                if (contO.wxz > 0) {
-                    --contO.wxz;
+                if (contO.wheelSteer > 0) {
+                    --contO.wheelSteer;
                 }
-                if (contO.wxz < 0) {
-                    ++contO.wxz;
+                if (contO.wheelSteer < 0) {
+                    ++contO.wheelSteer;
                 }
             }
             else {
-                if (Math.abs(contO.wxz) < this.cd.turn.get(this.cn) * 2) {
-                    contO.wxz = 0;
+                if (Math.abs(contO.wheelSteer) < this.cd.turn.get(this.cn) * 2) {
+                    contO.wheelSteer = 0;
                 }
-                if (contO.wxz > 0) {
-                    contO.wxz -= this.cd.turn.get(this.cn) * 2;
+                if (contO.wheelSteer > 0) {
+                    contO.wheelSteer -= this.cd.turn.get(this.cn) * 2;
                 }
-                if (contO.wxz < 0) {
-                    contO.wxz += this.cd.turn.get(this.cn) * 2;
+                if (contO.wheelSteer < 0) {
+                    contO.wheelSteer += this.cd.turn.get(this.cn) * 2;
                 }
             }
         }
@@ -596,12 +596,12 @@ public class Mad
         if (this.wtouch) {
             if (!this.capsized) {
                 if (!control.handb) {
-                    this.fxz = contO.wxz / (n12 * 3);
+                    this.fxz = contO.wheelSteer / (n12 * 3);
                 }
                 else {
-                    this.fxz = contO.wxz / n12;
+                    this.fxz = contO.wheelSteer / n12;
                 }
-                contO.yaw += contO.wxz / n12;
+                contO.yaw += contO.wheelSteer / n12;
             }
             this.wtouch = false;
             this.gtouch = false;
@@ -1506,7 +1506,7 @@ public class Mad
                 this.rpd.dest[this.im] = 300;
             }
         }
-        if (contO.dist == 0) {
+        if (contO.contDistance == 0) {
             for (int n109 = 0; n109 < contO.npl; ++n109) {
                 if (contO.p.get(n109).chip != 0) {
                     contO.p.get(n109).chip = 0;
@@ -1648,7 +1648,7 @@ public class Mad
                 for (int n115 = 0; n115 < checkPoints.fn; ++n115) {
                     if (!checkPoints.roted[n115]) {
                         if (Math.abs(contO.y - checkPoints.fz[n115]) < 200 && this.py(contO.x / 100, checkPoints.fx[n115] / 100, contO.z / 100, checkPoints.fy[n115] / 100) < 30) {
-                            if (contO.dist == 0) {
+                            if (contO.contDistance == 0) {
                                 contO.fcnt = 8;
                             }
                             else {
@@ -1661,7 +1661,7 @@ public class Mad
                         }
                     }
                     else if (Math.abs(contO.x - checkPoints.fx[n115]) < 200 && this.py(contO.y / 100, checkPoints.fz[n115] / 100, contO.z / 100, checkPoints.fy[n115] / 100) < 30) {
-                        if (contO.dist == 0) {
+                        if (contO.contDistance == 0) {
                             contO.fcnt = 8;
                         }
                         else {
@@ -1878,7 +1878,7 @@ public class Mad
     
     public void distruct(final ContO contO) {
         for (int i = 0; i < contO.npl; ++i) {
-            if (contO.p.get(i).wz == 0 || contO.p.get(i).gr == -17 || contO.p.get(i).gr == -16) {
+            if (contO.p.get(i).wy == 0 || contO.p.get(i).gr == -17 || contO.p.get(i).gr == -16) {
                 contO.p.get(i).embos = 1;
             }
         }
@@ -1938,7 +1938,7 @@ public class Mad
                 for (int k = 0; k < contO.npl; ++k) {
                     float n5 = 0.0f;
                     for (int l = 0; l < contO.p.get(k).n; ++l) {
-                        if (contO.p.get(k).wz == 0 && this.py(contO.keyx[n], contO.p.get(k).ox[l], contO.keyy[n], contO.p.get(k).oy[l]) < this.cd.clrad.get(this.cn)) {
+                        if (contO.p.get(k).wy == 0 && this.py(contO.keyx[n], contO.p.get(k).ox[l], contO.keyy[n], contO.p.get(k).oy[l]) < this.cd.clrad.get(this.cn)) {
                             n5 = a / 20.0f * this.m.random();
                             final float[] oz = contO.p.get(k).oy;
                             final int n6 = l;
@@ -2001,7 +2001,7 @@ public class Mad
                     for (int n10 = 0; n10 < contO.npl; ++n10) {
                         float n11 = 0.0f;
                         for (int n12 = 0; n12 < contO.p.get(n10).n; ++n12) {
-                            if (contO.p.get(n10).wz == 0) {
+                            if (contO.p.get(n10).wy == 0) {
                                 n11 = a / 15.0f * this.m.random();
                                 if ((Math.abs(contO.p.get(n10).oz[n12] - this.cd.flipy.get(this.cn) - this.squash) < this.cd.msquash.get(this.cn) * 3 || contO.p.get(n10).oz[n12] < this.cd.flipy.get(this.cn) + this.squash) && this.squash < this.cd.msquash.get(this.cn)) {
                                     final float[] oy = contO.p.get(n10).oz;
@@ -2068,7 +2068,7 @@ public class Mad
             for (int i = 0; i < contO.npl; ++i) {
                 float a = 0.0f;
                 for (int j = 0; j < contO.p.get(i).n; ++j) {
-                    if (contO.p.get(i).wz == 0 && this.py(contO.keyx[n], contO.p.get(i).ox[j], contO.keyy[n], contO.p.get(i).oy[j]) < this.cd.clrad.get(this.cn)) {
+                    if (contO.p.get(i).wy == 0 && this.py(contO.keyx[n], contO.p.get(i).ox[j], contO.keyy[n], contO.p.get(i).oy[j]) < this.cd.clrad.get(this.cn)) {
                         a = n2 / 20.0f * this.m.random();
                         final float[] oz = contO.p.get(i).oy;
                         final int n4 = j;
@@ -2155,7 +2155,7 @@ public class Mad
             for (int i = 0; i < contO.npl; ++i) {
                 float a = 0.0f;
                 for (int j = 0; j < contO.p.get(i).n; ++j) {
-                    if (contO.p.get(i).wz == 0 && this.py(contO.keyx[n], contO.p.get(i).ox[j], contO.keyy[n], contO.p.get(i).oy[j]) < this.cd.clrad.get(this.cn)) {
+                    if (contO.p.get(i).wy == 0 && this.py(contO.keyx[n], contO.p.get(i).ox[j], contO.keyy[n], contO.p.get(i).oy[j]) < this.cd.clrad.get(this.cn)) {
                         a = n2 / 20.0f * this.m.random();
                         final float[] oz = contO.p.get(i).oy;
                         final int n4 = j;

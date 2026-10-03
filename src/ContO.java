@@ -9,19 +9,8 @@ import java.util.Random;
 import java.io.DataInputStream;
 import java.io.ByteArrayInputStream;
 
-public class ContO
+public class ContO implements Comparable<ContO>
 {
-	// Static comparator to eliminate anonymous inner class allocation during sorting
-	private static final Comparator<Plane> PLANE_COMPARATOR = new Comparator<Plane>() {
-		@Override
-		public int compare(Plane p1, Plane p2) {
-			if (p1 == null && p2 == null) return 0;
-			if (p1 == null) return 1;
-			if (p2 == null) return -1;
-			return Float.compare(p2.av, p1.av);
-		}
-	};
-
 	// Reusable scratch buffers for per-frame rendering calculations
 	private final int[] scratch4_1 = new int[4];
 	private final int[] scratch4_2 = new int[4];
@@ -44,9 +33,9 @@ public class ContO
 	float yaw;
 	float roll;
 	float pitch;
-	float wxz;
-	float wzy;
-	float dist;
+	float wheelSteer;
+	float wheelSpin;
+	float contDistance;
 	float maxR;
 	float disp;
 	int disline;
@@ -123,9 +112,9 @@ public class ContO
 		this.yaw = 0;
 		this.roll = 0;
 		this.pitch = 0;
-		this.wxz = 0;
-		this.wzy = 0;
-		this.dist = 0;
+		this.wheelSteer = 0;
+		this.wheelSpin = 0;
+		this.contDistance = 0;
 		this.maxR = 0;
 		this.disp = 0;
 		this.disline = 14;
@@ -893,9 +882,9 @@ public class ContO
 		this.yaw = 0;
 		this.roll = 0;
 		this.pitch = 0;
-		this.wxz = 0;
-		this.wzy = 0;
-		this.dist = 0;
+		this.wheelSteer = 0;
+		this.wheelSpin = 0;
+		this.contDistance = 0;
 		this.maxR = 0;
 		this.disp = 0;
 		this.disline = 14;
@@ -953,7 +942,7 @@ public class ContO
 			if (contO.p.get(i).master == 1) {
 				contO.p.get(i).n = 20;
 			}
-			this.p.add(i, new Plane(this.m, this.t, contO.p.get(i).ox, contO.p.get(i).oy, contO.p.get(i).oz, contO.p.get(i).n, contO.p.get(i).oc, contO.p.get(i).glass, contO.p.get(i).gr, contO.p.get(i).fs, contO.p.get(i).wx, contO.p.get(i).wy, contO.p.get(i).wz, contO.disline, contO.p.get(i).bfase, contO.p.get(i).road, contO.p.get(i).light, contO.p.get(i).solo));
+			this.p.add(i, new Plane(this.m, this.t, contO.p.get(i).ox, contO.p.get(i).oy, contO.p.get(i).oz, contO.p.get(i).n, contO.p.get(i).oc, contO.p.get(i).glass, contO.p.get(i).gr, contO.p.get(i).fs, contO.p.get(i).wx, contO.p.get(i).wz, contO.p.get(i).wy, contO.disline, contO.p.get(i).bfase, contO.p.get(i).road, contO.p.get(i).light, contO.p.get(i).solo));
 		}
 		this.x = x2;
 		this.z = y2;
@@ -961,12 +950,15 @@ public class ContO
 		this.yaw = 0;
 		this.roll = 0;
 		this.pitch = 0;
-		for (int j = 0; j < this.npl; ++j) {
-			this.p.get(j).colnum = contO.p.get(j).colnum;
-			this.p.get(j).master = contO.p.get(j).master;
-			this.p.get(j).rot(this.p.get(j).ox, this.p.get(j).oy, 0, 0, xz2, this.p.get(j).n);
-			this.p.get(j).loadprojf();
-		}
+		java.util.stream.IntStream.range(0, this.npl).parallel().forEach(j -> {
+		    Plane targetPlane = this.p.get(j);
+		    Plane sourcePlane = contO.p.get(j);
+		    
+		    targetPlane.colnum = sourcePlane.colnum;
+		    targetPlane.master = sourcePlane.master;
+		    targetPlane.rot(targetPlane.ox, targetPlane.oy, 0, 0, xz2, targetPlane.n);
+		    targetPlane.loadprojf();
+		});
 		if (contO.tnt != 0) {
 			for (int k = 0; k < contO.tnt; ++k) {
 				this.t.xy[this.t.nt] = (int)(contO.txy[k] * this.m.cos(xz2) - contO.tzy[k] * this.m.sin(xz2));
@@ -1043,9 +1035,9 @@ public class ContO
 		this.yaw = 0;
 		this.roll = 0;
 		this.pitch = 0;
-		this.wxz = 0;
-		this.wzy = 0;
-		this.dist = 0;
+		this.wheelSteer = 0;
+		this.wheelSpin = 0;
+		this.contDistance = 0;
 		this.maxR = 0;
 		this.disp = 0;
 		this.disline = 14;
@@ -1345,14 +1337,14 @@ public class ContO
 		++t3.nt;
 	}
 	public void d(final Graphics2D graphics2D) {
-        if (this.dist != 0) {
-            this.dist = 0;
+        if (this.contDistance != 0) {
+            this.contDistance = 0;
         }
-        final float n = this.m.cx + ((this.x - this.m.x - this.m.cx) * this.m.cos(this.m.xz) - (this.y - this.m.y - this.m.cz) * this.m.sin(this.m.xz));
-        final float n2 = this.m.cz + ((this.x - this.m.x - this.m.cx) * this.m.sin(this.m.xz) + (this.y - this.m.y - this.m.cz) * this.m.cos(this.m.xz));
-        final float n3 = this.m.cz + ((this.z - this.m.z - this.m.cy) * this.m.sin(this.m.zy) + (n2 - this.m.cz) * this.m.cos(this.m.zy));
+        final float n = this.m.viewX + ((this.x - this.m.x - this.m.viewX) * this.m.cos(this.m.yaw) - (this.y - this.m.y - this.m.viewZ) * this.m.sin(this.m.yaw));
+        final float n2 = this.m.viewZ + ((this.x - this.m.x - this.m.viewX) * this.m.sin(this.m.yaw) + (this.y - this.m.y - this.m.viewZ) * this.m.cos(this.m.yaw));
+        final float n3 = this.m.viewZ + ((this.z - this.m.z - this.m.viewY) * this.m.sin(this.m.pitch) + (n2 - this.m.viewZ) * this.m.cos(this.m.pitch));
         int n4 = this.xs(n + this.maxR, n3) - this.xs(n - this.maxR, n3);
-        if (this.xs(n + this.maxR * 2, n3) > this.m.iw && this.xs(n - this.maxR * 2, n3) < this.m.w && n3 > -this.maxR && (n3 < this.m.fade[this.disline] + this.maxR || this.m.trk != 0) && (n4 > this.disp || this.m.trk != 0) && (!this.decor || (this.m.resdown != 2 && this.m.trk != 1))) {
+        if (this.xs(n + this.maxR * 2, n3) > this.m.iw && this.xs(n - this.maxR * 2, n3) < this.m.w && n3 > -this.maxR && (n3 < this.m.fade[this.disline] + this.maxR || this.m.trk != 0) && (n4 > this.disp || this.m.trk != 0) && (!this.decor || this.m.trk != 1)) {
             if (this.shadow) {
                 if (!this.m.crs) {
                     if (n3 < 2000) {
@@ -1374,7 +1366,7 @@ public class ContO
                             }
                             for (int i = this.t.sect[ncx][ncz].length - 1; i >= 0; --i) {
                                 final int n5 = this.t.sect[ncx][ncz][i];
-                                if (Math.abs(this.t.zy[n5]) != 90 && Math.abs(this.t.xy[n5]) != 90 && Math.abs(this.x - this.t.x[n5]) < this.t.radx[n5] + this.maxR && Math.abs(this.y - this.t.z[n5]) < this.t.radz[n5] + this.maxR && (!this.t.decor[n5] || this.m.resdown != 2)) {
+                                if (Math.abs(this.t.zy[n5]) != 90 && Math.abs(this.t.xy[n5]) != 90 && Math.abs(this.x - this.t.x[n5]) < this.t.radx[n5] + this.maxR && Math.abs(this.y - this.t.z[n5]) < this.t.radz[n5] + this.maxR && !this.t.decor[n5]) {
                                     b = true;
                                     break;
                                 }
@@ -1386,8 +1378,8 @@ public class ContO
                             }
                         }
                         else {
-                            final float n6 = this.m.cy + ((this.m.ground - this.m.cy) * this.m.cos(this.m.zy) - (n2 - this.m.cz) * this.m.sin(this.m.zy));
-                            final float n7 = this.m.cz + ((this.m.ground - this.m.cy) * this.m.sin(this.m.zy) + (n2 - this.m.cz) * this.m.cos(this.m.zy));
+                            final float n6 = this.m.viewY + ((this.m.ground - this.m.viewY) * this.m.cos(this.m.pitch) - (n2 - this.m.viewZ) * this.m.sin(this.m.pitch));
+                            final float n7 = this.m.viewZ + ((this.m.ground - this.m.viewY) * this.m.sin(this.m.pitch) + (n2 - this.m.viewZ) * this.m.cos(this.m.pitch));
                             if (this.ys(n6 + this.maxR, n7) > 0 && this.ys(n6 - this.maxR, n7) < this.m.h) {
                                 for (int k = 0; k < this.npl; ++k) {
                                     this.p.get(k).s(graphics2D, this.x - this.m.x, this.z - this.m.z, this.y - this.m.y, this.yaw, this.roll, this.pitch, 1);
@@ -1406,7 +1398,7 @@ public class ContO
                     }
                 }
             }
-            final float n8 = this.m.cy + ((this.z - this.m.z - this.m.cy) * this.m.cos(this.m.zy) - (n2 - this.m.cz) * this.m.sin(this.m.zy));
+            final float n8 = this.m.viewY + ((this.z - this.m.z - this.m.viewY) * this.m.cos(this.m.pitch) - (n2 - this.m.viewZ) * this.m.sin(this.m.pitch));
             if (this.ys(n8 + this.maxR, n3) > this.m.ih && this.ys(n8 - this.maxR, n3) < this.m.h) {
                 if (this.elec && this.m.noelec == 0) {
                     this.electrify(graphics2D);
@@ -1418,7 +1410,7 @@ public class ContO
                     n4 = -1;
                 }
                 if (this.shadow) {
-                    this.dist = (int)Math.sqrt((this.m.x + this.m.cx - this.x) * (this.m.x + this.m.cx - this.x) + (this.m.y - this.y) * (this.m.y - this.y) + (this.m.z + this.m.cy - this.z) * (this.m.z + this.m.cy - this.z));
+                    this.contDistance = (int)Math.sqrt((this.m.x + this.m.viewX - this.x) * (this.m.x + this.m.viewX - this.x) + (this.m.y - this.y) * (this.m.y - this.y) + (this.m.z + this.m.viewY - this.z) * (this.m.z + this.m.viewY - this.z));
                     for (int n9 = 0; n9 < 20; ++n9) {
                         if (this.stg[n9] != 0) {
                             this.pdust(n9, graphics2D, true);
@@ -1426,40 +1418,12 @@ public class ContO
                     }
                     this.dsprk(graphics2D, true);
                 }
-                final int[] array = new int[this.npl];
-                final int[] array2 = new int[this.npl];
-                for (int n10 = 0; n10 < this.npl; ++n10) {
-                    array[n10] = 0;
-                }
-                for (int n11 = 0; n11 < this.npl; ++n11) {
-                    for (int n12 = n11 + 1; n12 < this.npl; ++n12) {
-                        if (this.p.get(n11).av != this.p.get(n12).av) {
-                            if (this.p.get(n11).av < this.p.get(n12).av) {
-                                final int[] array3 = array;
-                                final int n13 = n11;
-                                ++array3[n13];
-                            }
-                            else {
-                                final int[] array4 = array;
-                                final int n14 = n12;
-                                ++array4[n14];
-                            }
-                        }
-                        else if (n11 > n12) {
-                            final int[] array5 = array;
-                            final int n15 = n11;
-                            ++array5[n15];
-                        }
-                        else {
-                            final int[] array6 = array;
-                            final int n16 = n12;
-                            ++array6[n16];
-                        }
-                    }
-                    array2[array[n11]] = n11;
-                }
-                for (int n17 = 0; n17 < this.npl; ++n17) {
-                    this.p.get(array2[n17]).d(graphics2D, this.x - this.m.x, this.z - this.m.z, this.y - this.m.y, this.yaw, this.roll, this.pitch, this.wxz, this.wzy, this.noline, n4);
+                // Passing null explicitly uses the Plane's Comparable natural ordering
+                this.p.subList(0, this.npl).sort(null);
+
+                // Render planes in the newly sorted order
+                for (int i = 0; i < this.npl; ++i) {
+                	this.p.get(i).d(graphics2D, this.x - this.m.x, this.z - this.m.z, this.y - this.m.y, this.yaw, this.roll, this.pitch, this.wheelSteer, this.wheelSpin, this.noline, n4);
                 }
                 if (this.shadow) {
                     for (int n18 = 0; n18 < 20; ++n18) {
@@ -1469,10 +1433,10 @@ public class ContO
                     }
                     this.dsprk(graphics2D, false);
                 }
-                this.dist = (int)(Math.sqrt((int)Math.sqrt((this.m.x + this.m.cx - this.x) * (this.m.x + this.m.cx - this.x) + (this.m.y - this.y) * (this.m.y - this.y) + (this.m.z + this.m.cy - this.z) * (this.m.z + this.m.cy - this.z))) * this.grounded);
+                this.contDistance = (int)(Math.sqrt((int)Math.sqrt((this.m.x + this.m.viewX - this.x) * (this.m.x + this.m.viewX - this.x) + (this.m.y - this.y) * (this.m.y - this.y) + (this.m.z + this.m.viewY - this.z) * (this.m.z + this.m.viewY - this.z))) * this.grounded);
             }
         }
-        if (this.shadow && this.dist == 0) {
+        if (this.shadow && this.contDistance == 0) {
             for (int n19 = 0; n19 < 20; ++n19) {
                 if (this.stg[n19] != 0) {
                     this.stg[n19] = 0;
@@ -1488,20 +1452,20 @@ public class ContO
             }
         }
     }
-    
-	public void drawContO(final Graphics2D graphics2D) {
-		float cont3DX = this.x - this.m.x, cont3DZ = this.z - this.m.z, cont3DY = this.y - this.m.y;
-		/*
-		rot(cont3DX, cont3DZ, this.m.x, this.m.z, this.zy);
-		rot(cont3DY, cont3DZ, this.m.y, this.m.z, this.xz);
-		rot(cont3DX, cont3DY, this.m.x, this.m.y, this.xy);
-		rot(cont3DX, cont3DY, this.m.cx, this.m.cz, this.zy);
-		rot(cont3DX, cont3DZ, this.m.cy, this.m.cz, this.xz);
-		*/
-		this.p.get(0).drawPlane(graphics2D, cont3DX, cont3DY, cont3DZ, pitch, roll, yaw);
-		
+	public void drawContO(Graphics2D context) {
+		if (this.elec && this.m.noelec == 0) {
+            this.electrify(context);
+        }
+        if (this.fix) {
+            this.fixit(context);
+        }
+        if (true) {
+    		this.p.subList(0, this.npl).sort(null);
+    		for (int i = 0; i < npl; i++) {
+    			this.p.get(i).drawPlanes(context, this);
+    		}
+        }
 	}
-	
 	public void lowshadow(final Graphics2D graphics2D, final float n32) {
 		final int[] array = this.scratch4_1;
 		final int[] array2 = this.scratch4_2;
@@ -1571,8 +1535,8 @@ public class ContO
 				}
 			}
 		}
-		this.rot(array, array3, this.m.cx, this.m.cz, this.m.xz, 4);
-		this.rot(array2, array3, this.m.cy, this.m.cz, this.m.zy, 4);
+		this.rot(array, array3, this.m.viewX, this.m.viewZ, this.m.yaw, 4);
+		this.rot(array2, array3, this.m.viewY, this.m.viewZ, this.m.pitch, 4);
 		boolean b2 = true;
 		int n8 = 0;
 		int n9 = 0;
@@ -1664,8 +1628,8 @@ public class ContO
 			this.rot(array, array2, this.x - this.m.x, this.z - this.m.z, this.roll, 4);
 			this.rot(array2, array3, this.z - this.m.z, this.y - this.m.z, this.pitch, 4);
 			this.rot(array, array3, this.x - this.m.x, this.y - this.m.y, this.yaw, 4);
-			this.rot(array, array3, this.m.cx, this.m.cz, this.m.xz, 4);
-			this.rot(array2, array3, this.m.cy, this.m.cz, this.m.zy, 4);
+			this.rot(array, array3, this.m.viewX, this.m.viewZ, this.m.yaw, 4);
+			this.rot(array2, array3, this.m.viewY, this.m.viewZ, this.m.pitch, 4);
 			int abs = 0;
 			int abs2 = 0;
 			float py = 0;
@@ -1689,10 +1653,10 @@ public class ContO
 			if (abs2 < n3) {
 				abs2 = n3;
 			}
-			final float n4 = this.m.cx + (int)((this.x - this.m.x - this.m.cx) * this.m.cos(this.m.xz) - (this.y - this.m.y - this.m.cz) * this.m.sin(this.m.xz));
-			final float n5 = this.m.cz + (int)((this.x - this.m.x - this.m.cx) * this.m.sin(this.m.xz) + (this.y - this.m.y - this.m.cz) * this.m.cos(this.m.xz));
-			final float n6 = this.m.cy + (int)((this.z - this.m.z - this.m.cy) * this.m.cos(this.m.zy) - (n5 - this.m.cz) * this.m.sin(this.m.zy));
-			final float n7 = this.m.cz + (int)((this.z - this.m.z - this.m.cy) * this.m.sin(this.m.zy) + (n5 - this.m.cz) * this.m.cos(this.m.zy));
+			final float n4 = this.m.viewX + (int)((this.x - this.m.x - this.m.viewX) * this.m.cos(this.m.yaw) - (this.y - this.m.y - this.m.viewZ) * this.m.sin(this.m.yaw));
+			final float n5 = this.m.viewZ + (int)((this.x - this.m.x - this.m.viewX) * this.m.sin(this.m.yaw) + (this.y - this.m.y - this.m.viewZ) * this.m.cos(this.m.yaw));
+			final float n6 = this.m.viewY + (int)((this.z - this.m.z - this.m.viewY) * this.m.cos(this.m.pitch) - (n5 - this.m.viewZ) * this.m.sin(this.m.pitch));
+			final float n7 = this.m.viewZ + (int)((this.z - this.m.z - this.m.viewY) * this.m.sin(this.m.pitch) + (n5 - this.m.viewZ) * this.m.cos(this.m.pitch));
 			array[0] = this.xs((int)(n4 - abs / 0.8 - this.m.random() * (abs / 2.4)), n7);
 			array2[0] = this.ys((int)(n6 - abs2 / 1.92 - this.m.random() * (abs2 / 5.67)), n7);
 			array[1] = this.xs((int)(n4 - abs / 0.8 - this.m.random() * (abs / 2.4)), n7);
@@ -1832,8 +1796,8 @@ public class ContO
 			if (this.roted) {
 				this.rot(array, array3, this.x - this.m.x, this.y - this.m.y, 90, 8);
 			}
-			this.rot(array, array3, this.m.cx, this.m.cz, this.m.xz, 8);
-			this.rot(array2, array3, this.m.cy, this.m.cz, this.m.zy, 8);
+			this.rot(array, array3, this.m.viewX, this.m.viewZ, this.m.yaw, 8);
+			this.rot(array2, array3, this.m.viewY, this.m.viewZ, this.m.pitch, 8);
 			boolean b = true;
 			int n5 = 0;
 			int n6 = 0;
@@ -1980,9 +1944,9 @@ public class ContO
 
 	public void pdust(final int n, final Graphics2D graphics2D, final boolean b) {
 		if (b) {
-			this.sav[n] = (int)Math.sqrt((this.m.x + this.m.cx - this.sx[n]) * (this.m.x + this.m.cx - this.sx[n]) + (this.m.z + this.m.cy - this.sy[n]) * (this.m.z + this.m.cy - this.sy[n]) + (this.m.y - this.sz[n]) * (this.m.y - this.sz[n]));
+			this.sav[n] = (int)Math.sqrt((this.m.x + this.m.viewX - this.sx[n]) * (this.m.x + this.m.viewX - this.sx[n]) + (this.m.z + this.m.viewY - this.sy[n]) * (this.m.z + this.m.viewY - this.sy[n]) + (this.m.y - this.sz[n]) * (this.m.y - this.sz[n]));
 		}
-		if ((b && this.sav[n] > this.dist) || (!b && this.sav[n] <= this.dist)) {
+		if ((b && this.sav[n] > this.contDistance) || (!b && this.sav[n] <= this.contDistance)) {
 			if (this.stg[n] == 1) {
 				this.sbln[n] = 0.6f;
 				boolean b2 = false;
@@ -2055,10 +2019,10 @@ public class ContO
 				}
 				this.smag[n][6] = this.smag[n][7];
 			}
-			final float n8 = this.m.cx + (int)((this.sx[n] - this.m.x - this.m.cx) * this.m.cos(this.m.xz) - (this.sz[n] - this.m.y - this.m.cz) * this.m.sin(this.m.xz));
-			final float n9 = this.m.cz + (int)((this.sx[n] - this.m.x - this.m.cx) * this.m.sin(this.m.xz) + (this.sz[n] - this.m.y - this.m.cz) * this.m.cos(this.m.xz));
-			final float n10 = this.m.cy + (int)((this.sy[n] - this.m.z - this.m.cy - this.smag[n][7]) * this.m.cos(this.m.zy) - (n9 - this.m.cz) * this.m.sin(this.m.zy));
-			final float n11 = this.m.cz + (int)((this.sy[n] - this.m.z - this.m.cy - this.smag[n][7]) * this.m.sin(this.m.zy) + (n9 - this.m.cz) * this.m.cos(this.m.zy));
+			final float n8 = this.m.viewX + (int)((this.sx[n] - this.m.x - this.m.viewX) * this.m.cos(this.m.yaw) - (this.sz[n] - this.m.y - this.m.viewZ) * this.m.sin(this.m.yaw));
+			final float n9 = this.m.viewZ + (int)((this.sx[n] - this.m.x - this.m.viewX) * this.m.sin(this.m.yaw) + (this.sz[n] - this.m.y - this.m.viewZ) * this.m.cos(this.m.yaw));
+			final float n10 = this.m.viewY + (int)((this.sy[n] - this.m.z - this.m.viewY - this.smag[n][7]) * this.m.cos(this.m.pitch) - (n9 - this.m.viewZ) * this.m.sin(this.m.pitch));
+			final float n11 = this.m.viewZ + (int)((this.sy[n] - this.m.z - this.m.viewY - this.smag[n][7]) * this.m.sin(this.m.pitch) + (n9 - this.m.viewZ) * this.m.cos(this.m.pitch));
 			final float[] sx = this.sx;
 			sx[n] += this.scx[n] / (this.stg[n] + 1);
 			final float[] sz = this.sz;
@@ -2169,7 +2133,7 @@ public class ContO
 			int n = (int)(Math.sqrt(this.rcx * this.rcx + this.rcy * this.rcy + this.rcz * this.rcz) / 10.0);
 			if (n > 5) {
 				boolean b2 = false;
-				if (this.dist < Math.sqrt((this.m.x + this.m.cx - this.srx) * (this.m.x + this.m.cx - this.srx) + (this.m.z + this.m.cy - this.sry) * (this.m.z + this.m.cy - this.sry) + (this.m.y - this.srz) * (this.m.y - this.srz))) {
+				if (this.contDistance < Math.sqrt((this.m.x + this.m.viewX - this.srx) * (this.m.x + this.m.viewX - this.srx) + (this.m.z + this.m.viewY - this.sry) * (this.m.z + this.m.viewY - this.sry) + (this.m.y - this.srz) * (this.m.y - this.srz))) {
 					b2 = true;
 				}
 				if (n > 33) {
@@ -2236,14 +2200,14 @@ public class ContO
 				final float[] rz = this.rz;
 				final int n9 = j;
 				rz[n9] += (int)this.vrz[j];
-				final float n10 = this.m.cx + (float)((this.rx[j] - this.m.x - this.m.cx) * this.m.cos(this.m.xz) - (this.rz[j] - this.m.y - this.m.cz) * this.m.sin(this.m.xz));
-				final float n11 = this.m.cz + (float)((this.rx[j] - this.m.x - this.m.cx) * this.m.sin(this.m.xz) + (this.rz[j] - this.m.y - this.m.cz) * this.m.cos(this.m.xz));
-				final float n12 = this.m.cy + (float)((this.ry[j] - this.m.z - this.m.cy) * this.m.cos(this.m.zy) - (n11 - this.m.cz) * this.m.sin(this.m.zy));
-				final float n13 = this.m.cz + (float)((this.ry[j] - this.m.z - this.m.cy) * this.m.sin(this.m.zy) + (n11 - this.m.cz) * this.m.cos(this.m.zy));
-				final float n14 = this.m.cx + (float)((this.rx[j] - this.m.x - this.m.cx + this.vrx[j]) * this.m.cos(this.m.xz) - (this.rz[j] - this.m.y - this.m.cz + this.vrz[j]) * this.m.sin(this.m.xz));
-				final float n15 = this.m.cz + (float)((this.rx[j] - this.m.x - this.m.cx + this.vrx[j]) * this.m.sin(this.m.xz) + (this.rz[j] - this.m.y - this.m.cz + this.vrz[j]) * this.m.cos(this.m.xz));
-				final float n16 = this.m.cy + (float)((this.ry[j] - this.m.z - this.m.cy + this.vry[j]) * this.m.cos(this.m.zy) - (n15 - this.m.cz) * this.m.sin(this.m.zy));
-				final float n17 = this.m.cz + (float)((this.ry[j] - this.m.z - this.m.cy + this.vry[j]) * this.m.sin(this.m.zy) + (n15 - this.m.cz) * this.m.cos(this.m.zy));
+				final float n10 = this.m.viewX + (float)((this.rx[j] - this.m.x - this.m.viewX) * this.m.cos(this.m.yaw) - (this.rz[j] - this.m.y - this.m.viewZ) * this.m.sin(this.m.yaw));
+				final float n11 = this.m.viewZ + (float)((this.rx[j] - this.m.x - this.m.viewX) * this.m.sin(this.m.yaw) + (this.rz[j] - this.m.y - this.m.viewZ) * this.m.cos(this.m.yaw));
+				final float n12 = this.m.viewY + (float)((this.ry[j] - this.m.z - this.m.viewY) * this.m.cos(this.m.pitch) - (n11 - this.m.viewZ) * this.m.sin(this.m.pitch));
+				final float n13 = this.m.viewZ + (float)((this.ry[j] - this.m.z - this.m.viewY) * this.m.sin(this.m.pitch) + (n11 - this.m.viewZ) * this.m.cos(this.m.pitch));
+				final float n14 = this.m.viewX + (float)((this.rx[j] - this.m.x - this.m.viewX + this.vrx[j]) * this.m.cos(this.m.yaw) - (this.rz[j] - this.m.y - this.m.viewZ + this.vrz[j]) * this.m.sin(this.m.yaw));
+				final float n15 = this.m.viewZ + (float)((this.rx[j] - this.m.x - this.m.viewX + this.vrx[j]) * this.m.sin(this.m.yaw) + (this.rz[j] - this.m.y - this.m.viewZ + this.vrz[j]) * this.m.cos(this.m.yaw));
+				final float n16 = this.m.viewY + (float)((this.ry[j] - this.m.z - this.m.viewY + this.vry[j]) * this.m.cos(this.m.pitch) - (n15 - this.m.viewZ) * this.m.sin(this.m.pitch));
+				final float n17 = this.m.viewZ + (float)((this.ry[j] - this.m.z - this.m.viewY + this.vry[j]) * this.m.sin(this.m.pitch) + (n15 - this.m.viewZ) * this.m.cos(this.m.pitch));
 				final int xs = this.xs(n10, n13);
 				final int ys = this.ys(n12, n13);
 				final int xs2 = this.xs(n14, n17);
@@ -2299,14 +2263,14 @@ public class ContO
 		if (n13 < 50) {
 			n13 = 50;
 		}
-		return (int) ((n13 - this.m.focus_point) * (this.m.cx - n10) / n13 + n10);
+		return (int) ((n13 - this.m.focus_point) * (this.m.viewX - n10) / n13 + n10);
 	}
 
 	public int ys(final float n12, float n13) {
 		if (n13 < 50) {
 			n13 = 50;
 		}
-		return (int) ((n13 - this.m.focus_point) * (this.m.cy - n12) / n13 + n12);
+		return (int) ((n13 - this.m.focus_point) * (this.m.viewY - n12) / n13 + n12);
 	}
 
 	public int getvalue(final String s, final String s2, final int n) {
@@ -2355,12 +2319,22 @@ public class ContO
 		}
 	}
 	
-	public void rot(float array, float array2, final float n, final float n2, final float n3) {
-		if (n3 != 0) {
-				final float n5 = array;
-				final float n6 = array2;
-				array = n + ((n5 - n) * this.m.cos(n3) - (n6 - n2) * this.m.sin(n3));
-				array2 = n2 + ((n5 - n) * this.m.sin(n3) + (n6 - n2) * this.m.cos(n3));
-		}
-	}
+	public void rotSingle(float x, float y, float cx, float cy, float angle) {
+        if (angle == 0) return;
+
+        float dx = x - cx;
+        float dy = y - cy;
+
+        float cos = (float) Math.cos(Math.toRadians(angle));
+        float sin = (float) Math.sin(Math.toRadians(angle));
+
+        x = cx + (dx * cos - dy * sin);
+        y = cy + (dx * sin + dy * cos);
+    }
+
+	@Override
+    public int compareTo(ContO other) {
+        // Sorts descending so higher values are drawn first
+        return Float.compare(other.contDistance, this.contDistance);
+    }
 }
